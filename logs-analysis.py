@@ -35,8 +35,20 @@ def top_3_articles():
     )
 
 
+def top_3_authors():
+    return execute_query(
+        "SELECT name, views "
+        "FROM top_3_articles,authors "
+        "WHERE top_3_articles.author = authors.id "
+        "ORDER BY top_3_articles.views DESC;"
+    )
+
+
 if __name__ == '__main__':
     dbConnection = psycopg2.connect("dbname=%s" % DB_NAME)
 
     print_tuple(top_3_articles(), "Top 3 articles", " views", True)
+    print
+
+    print_tuple(top_3_authors(), "Top 3 authors", " views")
     print
