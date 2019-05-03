@@ -26,6 +26,17 @@ def print_tuple(tuples, header_title, trial_word, quotes_first_value=False):
         print "%s -- %s%s" % (value1, row[1], trial_word)
 
 
+def top_3_articles():
+    return execute_query(
+        "SELECT title, views "
+        "FROM top_3_articles, articles "
+        "WHERE top_3_articles.slug = articles.slug "
+        "ORDER BY top_3_articles.views DESC;"
+    )
+
+
 if __name__ == '__main__':
     dbConnection = psycopg2.connect("dbname=%s" % DB_NAME)
 
+    print_tuple(top_3_articles(), "Top 3 articles", " views", True)
+    print
