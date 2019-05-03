@@ -44,6 +44,17 @@ def top_3_authors():
     )
 
 
+def daily_request_errors(filter_percentages=1):
+    return execute_query(
+        "SELECT requests_per_day.day, trunc(errors::decimal/requests * 100, 2)"
+        "  AS error_percentage "
+        "FROM requests_per_day "
+        "LEFT JOIN requests_per_day_errors "
+        "  ON requests_per_day.day = requests_per_day_errors.day "
+        "WHERE errors::decimal / requests > %f;" % (filter_percentages / 100.0)
+    )
+
+
 if __name__ == '__main__':
     dbConnection = psycopg2.connect("dbname=%s" % DB_NAME)
 
@@ -52,3 +63,6 @@ if __name__ == '__main__':
 
     print_tuple(top_3_authors(), "Top 3 authors", " views")
     print
+
+    print_tuple(daily_request_errors(1),
+                "Requests error per day (more than 1%)", "% errors")
